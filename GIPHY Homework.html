@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Godzilla Movie Monsters</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+    header{
+      font-size: 60px;
+      text-align: center;
+      background: #C00000;
+      color: white;
+      padding: 20px;
+      border-bottom: 4px solid black;
+    }
+    .gifcontainer {
+      float: right;
+      padding-right: 40px;
+      padding-top: 54px;
+      margin-right: 240px;
+      display: inline-block;
+      width: 500px;
+    }
+    .buttoncontainer {
+      float: left;
+      height: auto;
+      width: 320px;
+      padding: 20px;
+      margin-top: 70px;
+      margin-left: 200px;
+      background: #FF4500;
+      border: 3px solid black;
+      overflow: hidden;
+    }
+    #monster-form {
+      text-align: center;
+      font-size: 18px;
+    }
+    #add-monster {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>Godzilla Movie Monster Search</header>
+
+  <div class="gifcontainer">
+    
+    <!-- Rendered monster gifs will get Dumped Here  -->
+    <div id="GIFArea">
+      <img src="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-still="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-animate="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200.gif" data-state="still" class="gif">
+    </div>
+  
+  </div>
+
+  <div class="buttoncontainer">
+    <!-- Rendered Buttons will get Dumped Here  -->
+    <div id="buttons-view"></div><br>
+
+    <form id="monster-form">
+      <label for="monster-input"><Strong>Add your favorite Monster</strong></label>
+      <input type="text" id="monster-input"><br><br>
+
+      <!-- Button triggers new monster to be added -->
+      <input id="add-monster" type="submit" value="Add a Monster">
+    </form>
+  </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      // Initial array of monsters
+      var monsters = ["Godzilla", "Ghidorah", "Mechagodzilla", "Mothra", "Gigan", "Destoroyah", "Anguirus", "Orga", "Hedorah", "Rodan", "MUTOS", "King Kong", "Titanosaurus", "Battra", "Megalon", "SpaceGodzilla", "Baragon", "Kamacuras", "Ebirah", "Gabara"];
+
+      // displayMonsterInfo function re-renders the HTML to display the appropriate content
+      function displayMonsterInfo() {
+
+        var monster = $(this).attr("data-name");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q="+monster+"&apikey=c9dea75e2f16401196c8f12b6f2b72bd&limit=10&rating=pg";
+
+        // Creating an AJAX call for the specific monster button being clicked
+        $.ajax({url: queryURL,method: "GET"})
+          .done(function(response) {
+
+          for(var i=0;i<response.data.length;i++){
+
+          $('#GIFArea').prepend("<p>Rating: "+response.data[i].rating+"</p>");
+
+          $('#GIFArea').prepend("<img src='"+response.data[i].images.downsized_still.url+"'>");
+          
+        }
+          
+        });
+
+      }
+
+      $(".gif").on("click", function() {
+      // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+      var state = $(this).attr("data-state");
+      // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+      // Then, set the image's data-state to animate
+      // Else set src to the data-still value
+      if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+      }
+    });
+
+      // Function for displaying monster data
+      function renderButtons() {
+
+        // Deleting the monsters prior to adding new monsters
+        // (this is necessary otherwise you will have repeat buttons)
+        $("#buttons-view").empty();
+
+        // Looping through the array of movies
+        for (var i = 0; i < monsters.length; i++) {
+
+          // Then dynamicaly generating buttons for each monster in the array
+          // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+          var a = $("<button>");
+          // Adding a class of monster to our button
+          a.addClass("monster");
+          // Adding a data-attribute
+          a.attr("data-name", monsters[i]);
+          // Providing the initial button text
+          a.text(monsters[i]);
+          // Adding the button to the buttons-view div
+          $("#buttons-view").append(a);
+        }
+      }
+
+      // This function handles events where a monster button is clicked
+      $("#add-monster").on("click", function(event) {
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var monster = $("#monster-input").val().trim();
+
+        // Adding monster from the textbox to our array
+        monsters.push(monster);
+
+        // Calling renderButtons which handles the processing of our monster array
+        renderButtons();
+      });
+
+      // Adding a click event listener to all elements with a class of "monster"
+      $(document).on("click", ".monster", displayMonsterInfo);
+
+      // Calling the renderButtons function to display the intial buttons
+      renderButtons();
+    </script>
+  </div>
+</body>
+
+</html>
