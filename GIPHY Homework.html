@@ -11,12 +11,17 @@
     input {
       margin: 10px;
     }
+    body {
+      background: #FF9933;
+    }
     header{
       font-size: 60px;
       text-align: center;
       background: #C00000;
       color: white;
       padding: 20px;
+      margin-top: -10px;
+      width: auto;
       border-bottom: 4px solid black;
     }
     .gifcontainer {
@@ -57,8 +62,8 @@
   <div class="gifcontainer">
     
     <!-- Rendered monster gifs will get Dumped Here  -->
-    <div id="GIFArea">
-      <img src="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-still="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-animate="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200.gif" data-state="still" class="gif">
+    <div id="gifdiv">
+      
     </div>
   
   </div>
@@ -79,46 +84,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
 
+       $(document).ready(function() {
+        $("img src").click(
+          function()
+          {
+            $(this).attr("src", "<img src='"+response.data[i].images.downsized.url+"'>");
+        },
+        function()
+        {
+            $(this).attr("src", "<img src='"+response.data[i].images.downsized_still.url+"'>");
+        });
+});
+
       // Initial array of monsters
       var monsters = ["Godzilla", "Ghidorah", "Mechagodzilla", "Mothra", "Gigan", "Destoroyah", "Anguirus", "Orga", "Hedorah", "Rodan", "MUTOS", "King Kong", "Titanosaurus", "Battra", "Megalon", "SpaceGodzilla", "Baragon", "Kamacuras", "Ebirah", "Gabara"];
 
       // displayMonsterInfo function re-renders the HTML to display the appropriate content
       function displayMonsterInfo() {
 
+        // var gif - "img src"
         var monster = $(this).attr("data-name");
-        var queryURL = "http://api.giphy.com/v1/gifs/search?q="+monster+"&apikey=c9dea75e2f16401196c8f12b6f2b72bd&limit=10&rating=pg";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q="+monster+"&apikey=c9dea75e2f16401196c8f12b6f2b72bd&limit=10&rating=pg";
+
+        
 
         // Creating an AJAX call for the specific monster button being clicked
         $.ajax({url: queryURL,method: "GET"})
           .done(function(response) {
 
           for(var i=0;i<response.data.length;i++){
+            var still = response.data[i].images.downsized_still.url;
+            var animated = response.data[i].images.downsized.url;
+            var monsterImg = $("<img>").attr("src", still);
+            monsterImg.attr("data-still", still);
+            monsterImg.attr("data-animated", animated);
+            monsterImg.attr("data-status", still);
+            
+          $('#gifdiv').prepend("<p>Rating: "+response.data[i].rating+"</p>");
 
-          $('#GIFArea').prepend("<p>Rating: "+response.data[i].rating+"</p>");
+          $('#gifdiv').prepend("<img src='"+still+"'>");
+                    
+          };       
+          });
+      };
+              
+          $(document).on("click", "Img", function(){
+            var state = $(this).attr("data-status");
 
-          $('#GIFArea').prepend("<img src='"+response.data[i].images.downsized_still.url+"'>");
-          
-        }
-          
+            if (state === "still") {
+            $(this).attr("src", $(this).attr("data-animated"));
+            $(this).attr("data-status", "animated");
+          } else {
+            $(this).attr("src", $(this).attr("data-still"));
+            $(this).attr("data-status", "still");
+          }
         });
-
-      }
-
-      $(".gif").on("click", function() {
-      // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
-      var state = $(this).attr("data-state");
-      // If the clicked image's state is still, update its src attribute to what its data-animate value is.
-      // Then, set the image's data-state to animate
-      // Else set src to the data-still value
-      if (state === "still") {
-        $(this).attr("src", $(this).attr("data-animate"));
-        $(this).attr("data-state", "animate");
-      } else {
-        $(this).attr("src", $(this).attr("data-still"));
-        $(this).attr("data-state", "still");
-      }
-    });
-
+         
+          
       // Function for displaying monster data
       function renderButtons() {
 
