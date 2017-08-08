@@ -81,23 +81,13 @@
     </form>
   </div>
 
+  <audio id="roar" src="assets/soundclips/roar.mp3" preload="auto"></audio>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-
-       $(document).ready(function() {
-        $("img src").click(
-          function()
-          {
-            $(this).attr("src", "<img src='"+response.data[i].images.downsized.url+"'>");
-        },
-        function()
-        {
-            $(this).attr("src", "<img src='"+response.data[i].images.downsized_still.url+"'>");
-        });
-});
-
+      
       // Initial array of monsters
-      var monsters = ["Godzilla", "Ghidorah", "Mechagodzilla", "Mothra", "Gigan", "Destoroyah", "Anguirus", "Orga", "Hedorah", "Rodan", "MUTOS", "King Kong", "Titanosaurus", "Battra", "Megalon", "SpaceGodzilla", "Baragon", "Kamacuras", "Ebirah", "Gabara"];
+      var monsters = ["Godzilla", "Ghidorah", "Mechagodzilla", "Mothra", "Destoroyah", "Anguirus", "Hedorah", "Rodan", "MUTOS", "King Kong", "Titanosaurus", "Battra", "Megalon", "SpaceGodzilla", "Baragon", "Kamacuras", "Ebirah", "Gabara"];
 
       // displayMonsterInfo function re-renders the HTML to display the appropriate content
       function displayMonsterInfo() {
@@ -109,6 +99,8 @@
         
 
         // Creating an AJAX call for the specific monster button being clicked
+       
+        
         $.ajax({url: queryURL,method: "GET"})
           .done(function(response) {
 
@@ -122,21 +114,25 @@
             
           $('#gifdiv').prepend("<p>Rating: "+response.data[i].rating+"</p>");
 
-          $('#gifdiv').prepend("<img src='"+still+"'>");
+          $('#gifdiv').prepend(monsterImg);
                     
           };       
           });
-      };
+         };
               
-          $(document).on("click", "Img", function(){
+          $(document).on("click", "img", function(){
             var state = $(this).attr("data-status");
 
             if (state === "still") {
             $(this).attr("src", $(this).attr("data-animated"));
             $(this).attr("data-status", "animated");
+            var audioroar = document.getElementById("roar");
+            audioroar.play();
+
           } else {
             $(this).attr("src", $(this).attr("data-still"));
             $(this).attr("data-status", "still");
+
           }
         });
          
