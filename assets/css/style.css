@@ -1,0 +1,47 @@
+
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+    body {
+      background: #FF9933;
+    }
+    header{
+      font-size: 60px;
+      text-align: center;
+      background: #C00000;
+      color: white;
+      padding: 20px;
+      margin-top: -10px;
+      width: auto;
+      border-bottom: 4px solid black;
+    }
+    .gifcontainer {
+      float: right;
+      padding-right: 40px;
+      padding-top: 54px;
+      margin-right: 240px;
+      display: inline-block;
+      width: 500px;
+    }
+    .buttoncontainer {
+      float: left;
+      height: auto;
+      width: 320px;
+      padding: 20px;
+      margin-top: 70px;
+      margin-left: 200px;
+      background: #FF4500;
+      border: 3px solid black;
+      overflow: hidden;
+    }
+    #monster-form {
+      text-align: center;
+      font-size: 18px;
+    }
+    #add-monster {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
