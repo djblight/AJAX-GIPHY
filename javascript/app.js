@@ -79,6 +79,8 @@
         // This line grabs the input from the textbox
         var monster = $("#monster-input").val().trim();
 
+      // Setting the input value to a variable and then clearing the input
+        $("input[type='text']").val("");
         // Adding monster from the textbox to our array
         monsters.push(monster);
 
